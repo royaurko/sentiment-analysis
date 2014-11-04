@@ -1,0 +1,102 @@
+
+.ONESHELL:
+build/stop_$(dset): 
+	mkdir -p ./preprocess_files/stop/$(dset)/$(dlabel1)
+	mkdir -p ./preprocess_files/stop/$(dset)/$(dlabel2)
+	$(CC) -cp ./preprocess_files Remove_stopword dataset/$(dset)/$(dlabel1) preprocess_files/$(stop) preprocess_files/stop/$(dset)/$(dlabel1)
+	$(CC) -cp ./preprocess_files Remove_stopword dataset/$(dset)/$(dlabel2) preprocess_files/$(stop) preprocess_files/stop/$(dset)/$(dlabel2)
+	echo -n "Build date: " > build/stop_$(dset)
+	date >> build/stop_$(dset)
+
+.ONESHELL:
+build/tag_$(dset): build/stop_$(dset)
+	./preprocess_files/tag.sh $(dset) $(dlabel1) $(dlabel2)
+	echo -n "Build date: " > build/tag_$(dset)
+	date >> build/tag_$(dset)
+
+.ONESHELL:
+build/tfidf_$(dset):  build/tag_$(dset)
+	mkdir -p ./preprocess_files/tfidf/$(dset)
+	$(CC) -cp ./preprocess_files InverseDocument_freqCount preprocess_files/stop/$(dset)_total dummy > preprocess_files/tfidf/$(dset)/tfidf_$(dset) 
+	echo -n "Build date: " > build/tfidf_$(dset)
+	date >> build/tfidf_$(dset)
+
+.ONESHELL:
+build/kernel_$(dset): build/tfidf_$(dset)
+	mkdir -p ./preprocess_files/kernel_matrix/$(dset)
+	$(CC) -cp ./preprocess_files Kernel_matrix_Create preprocess_files/stop/$(dset)_total preprocess_files/tfidf/$(dset)/tfidf_$(dset) preprocess_files/kernel_matrix/$(dset)/matrix_$(dset)
+	echo -n "Build date: " > build/kernel_$(dset)
+	date >> build/kernel_$(dset)
+
+.ONESHELL:
+build/normalize_$(dset): build/kernel_$(dset)
+	mkdir -p ./preprocess_files/normalized_matrix/$(dset)
+	$(CC) -cp ./preprocess_files Normalize_matrix preprocess_files/kernel_matrix/$(dset)/matrix_$(dset) > ./preprocess_files/normalized_matrix/$(dset)/normalized_matrix_$(dset)
+	echo -n "Build date: " > build/normalize_$(dset)
+	date >> build/normalize_$(dset)
+
+
+.ONESHELL:
+build/sqlite_$(dset) : build/normalize_$(dset)
+	cp ./preprocess_files/normalized_matrix/$(dset)/normalized_matrix_$(dset) ./mincut_files/normalized_matrix_$(dset)
+	./scripts/initializedb.sh $(dset)
+	echo -n "Build date: " > build/sqlite_$(dset)
+	date >> build/sqlite_$(dset)
+	
+
+.ONESHELL:
+ build/svm_$(dset) : build/kernel_$(dset)
+	./preprocess_files/prepare_svm.sh $(no_fold) $(dset)
+	$(CC) -cp ./preprocess_files Prepare_input_SVM preprocess_files/kernel_matrix/$(dset)/matrix_$(dset) libsvm_results/$(dset) $(no_fold) $(dset)
+	echo -n "Build date: " > build/svm_$(dset)
+	date >> build/svm_$(dset)
+
+.ONESHELL:
+build/test_svm_$(dset) : build/svm_$(dset)
+	./scripts/svmprepare.sh $(no_fold) $(dset)
+	./scripts/test_svm.sh $(no_fold) $(dset)
+	echo -n "Build date: " > build/test_svm_$(dset)
+	date >> build/test_svm_$(dset)
+
+.ONESHELL:
+build/mincut_$(dset) : build/sqlite_$(dset) build/test_svm_$(dset)
+	./scripts/mincutprepare.sh $(dset) $(no_fold) $(size)
+	./scripts/test_mincut.sh $(dset) $(no_fold) $(size)
+	echo -n "Build date: " > build/mincut_$(dset)
+	date >> build/mincut_$(dset)
+	
+
+clean :
+	rm -f build/stop_$(dset)
+	rm -f build/tag_$(dset)
+	rm -f build/tfidf_$(dset)
+	rm -f build/kernel_$(dset)
+	rm -f build/normalize_$(dset)
+	rm -f build/sqlite_$(dset)
+	rm -f build/svm_$(dset)
+	rm -f build/test_svm_$(dset)
+	rm -f build/mincut_$(dset)
+	
+
+
+stop: build/stop_$(dset)
+
+tag: build/tag_$(dset)
+
+tfidf : build/tfidf_$(dset) 
+
+kernel: build/kernel_$(dset)
+
+kernel_concat : build/kernel_concat_$(dset)
+
+normalize: build/normalize_$(dset)
+
+sqlite: build/sqlite_$(dset)
+
+mincut: build/mincut_$(dset)
+
+svm: build/svm_$(dset)
+
+test_svm: build/test_svm_$(dset)
+
+all: mincut

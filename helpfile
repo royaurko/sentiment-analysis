@@ -1,0 +1,26 @@
+Usage: ./configure [FLAGS]
+
+Compulsory Flags:
+	--dset   <dataset_name>		Specify the name of the dataset under experimentation. 
+					The dataset <dataset_name> must reside in the dataset folder.	
+
+Preferably Compulsory Flags:
+	--label1 <label1>		Specify the label of the first class of the dataset.
+					If not specified it takes the label to be neg
+
+	--label2 <label2>		Specify the label of the second class of the dataset.
+					If not specified it takes the label to be pos
+
+	--size	 <size>			The number of files in each class of the dataset.
+					If not specified it takes the number of files in each class to be 1000.  
+	
+
+Optional Flags:
+	--stoplist <stopfile> 		Specify the name of the stop file in case you use your own list of stop words. 
+					The file <stopfile> must reside in the preprocess_files folder.
+					If not specified it uses the default stop file in preprocess_files/stop_word  
+
+	--n <no_folds>			Specify the number of fold validation you want to use. 
+					If not specified it takes n to be 10.
+
+	--help				Opens this menu

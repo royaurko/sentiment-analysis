@@ -1,0 +1,70 @@
+#!/bin/bash
+# Default variables that will go to the make file in case the user does not provide his own flags
+CC="java"
+dlabel1="neg"
+dlabel2="pos"
+stop="stop_word"
+no_fold=10
+size=1000
+
+
+
+while [[ $1 != "" ]] 
+do
+case $1 in 
+      "--dset")
+	      shift 1
+		dset=$1
+		echo "Dataset: $dset"
+		shift 1;;
+      "--label1") 	
+	      shift 1
+	      dlabel1=$1
+	      echo "label1: $dlabel1"
+	      shift 1;;
+      "--label2")
+	      shift 1
+	      dlabel2=$1
+	      echo "label2: $dlabel2"
+	      shift 1;;
+      "--stoplist")
+	      shift 1
+	      stop=$1
+	      echo "Stop word list: $stop"
+	      shift;;
+      "--n")
+	      shift 1
+	      no_fold=$1
+	      echo "Number of folds: $no_fold"
+	      shift 1;;
+      "--size")
+	      shift 1
+	      size=$1
+	      echo "Size of dataset: $size"
+	      shift 1;;
+      "--help")
+	      shift 1
+	      help=$1
+	      cat helpfile
+	      shift 1
+	      exit;;
+      *)
+	      echo "Error. For more options use --help"
+	      exit;;
+esac
+done
+
+if [[ $dset != "" ]]
+then
+echo "CC=$CC" > Makefile
+echo "dset=$dset" >> Makefile
+echo "dlabel1=$dlabel1" >> Makefile
+echo "dlabel2=$dlabel2" >> Makefile
+echo "stop=$stop" >> Makefile
+echo "no_fold=$no_fold" >> Makefile
+echo "size=$size" >> Makefile
+cat Makefile.in >> Makefile
+else
+echo "Dataset not specified! For help use with the flag --help"
+fi
+
