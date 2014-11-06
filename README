@@ -26,9 +26,9 @@ flag with the just the name of the file. (No need to specify path)
 
 --help   -> This opens up the help menu.
 
-The makefile is now generated. To run type
+The makefile is now generated. To run type at the command prompt
 
-	$ make all
+	 make all
 
 --------------------------------
 Explanation of folder convention
