@@ -18,19 +18,19 @@ A suite of tools to classify movie reviews as expressing *positive* or *negative
 
 ## List of default values
 
---label1 -> This has a default value of neg. If your dataset has a different label specify the label with the --label1 flag.
+* --label1 : This has a default value of neg. If your dataset has a different label specify the label with the --label1 flag.
 
---label2 -> This has a default value of pos. If your dataset has a different label specify the label with the --label2 flag.
+* --label2 : This has a default value of pos. If your dataset has a different label specify the label with the --label2 flag.
 
---n      -> This represents the n-fold validation. Typically this is 10. If you want to change the value, use the --n flag.
+* --n : This represents the n-fold validation. Typically this is 10. If you want to change the value, use the --n flag.
 
---size   -> This represents the number of raw files in each class of your dataset. The default value is 1000. 
+* --size : This represents the number of raw files in each class of your dataset. The default value is 1000. 
 
---stoplist -> If you want to use your own stop file, place it in the preprocess_files folder and use the --stoplist
+* --stoplist : If you want to use your own stop file, place it in the preprocess_files folder and use the --stoplist
 
 flag with the just the name of the file. (No need to specify path)
 
---help   -> This opens up the help menu.
+* --help : This opens up the help menu.
 
 The makefile is now generated. To run type 
 
