@@ -26,9 +26,8 @@ A suite of tools to classify movie reviews as expressing *positive* or *negative
 
 * --size : This represents the number of raw files in each class of your dataset. The default value is 1000. 
 
-* --stoplist : If you want to use your own stop file, place it in the preprocess_files folder and use the --stoplist
-
-flag with the just the name of the file. (No need to specify path)
+* --stoplist : If you want to use your own stop file, place it in the preprocess_files folder and 
+use the --stoplist flag with the just the name of the file. (No need to specify path)
 
 * --help : This opens up the help menu.
 
@@ -47,9 +46,8 @@ $ make all
 
 * The makefile maintains a build history in the build folder.
 
-* The first few recipes of the makefile are preprocessing functions. To view the intermediate files generated during
-
-preprocessing you can visit the preprocess_files folder.
+* The first few recipes of the makefile are preprocessing functions. The intermediate files generated during
+preprocessing can be viewed in the preprocess_files folder.
 
 * The folder preprocess_files/stop/<your_dataset> contains the dataset with the stop words removed.
 
